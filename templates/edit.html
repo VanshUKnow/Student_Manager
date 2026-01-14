@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if student %}Edit Details{% else %}Add New Student{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-title">
+                Student Grade Manager
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('add_student') }}" class="btn btn-add">+ New Student</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-section">
+            <div class="form-container">
+                <h2>{% if student %}Edit Student{% else %}Add New Student{% endif %}</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    {% if student %}Update the student's information below.{% else %}Enter the details to create a new student record.{% endif %}
+                </p>
+                
+                <form method="POST" class="student-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            value="{{ student.name if student else '' }}" 
+                            required
+                            placeholder="e.g. Jane Doe"
+                            class="form-input"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input 
+                            type="text" 
+                            id="subject" 
+                            name="subject" 
+                            value="{{ student.subject if student else '' }}" 
+                            required
+                            placeholder="e.g. Mathematics"
+                            class="form-input"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade">Grade Percentage</label>
+                        <input 
+                            type="number" 
+                            id="grade" 
+                            name="grade" 
+                            value="{{ student.grade if student else '' }}" 
+                            required
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            placeholder="0-100"
+                            class="form-input"
+                        >
+                        <small class="helper-text">Please enter a value between 0 and 100.</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('index') }}" class="btn btn-cancel">Cancel</a>
+                        <button type="submit" class="btn btn-submit">
+                            {% if student %}Save Changes{% else %}Create Record{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Student Grade Manager. Minimalist Edition.</p>
+    </footer>
+</body>
+</html>

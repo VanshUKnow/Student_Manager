@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Grade Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-title">
+                Student Grade Manager
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('add_student') }}" class="btn btn-add">+ New Student</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="content-wrapper">
+            
+            <div class="stats-section">
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <p class="stat-number">{{ total }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Class Average</h3>
+                    <p class="stat-number">{{ avg }}%</p>
+                </div>
+            </div>
+
+            {% if search_query %}
+                <div class="alert" style="background: var(--color-gray-100); border-color: var(--color-gray-300); color: var(--color-black);">
+                    <span>Showing results for: <strong>"{{ search_query }}"</strong></span>
+                    <a href="{{ url_for('index') }}" class="btn btn-edit" style="font-size: 0.8rem; padding: 0.2rem 0.6rem; border:none; text-decoration:underline;">Clear Search</a>
+                </div>
+            {% endif %}
+
+            {% if students %}
+                <div class="table-section">
+                    <div class="table-header">
+                        <h2>Student Performance</h2>
+                    </div>
+                    <table class="students-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <td><strong>{{ student.name }}</strong></td>
+                                    <td style="color: var(--text-secondary);">{{ student.subject }}</td>
+                                    <td class="grade-cell">{{ student.grade }}%</td>
+                                    <td>
+                                        {% if student.grade >= 80 %}
+                                            <span class="badge excellent">Excellent</span>
+                                        {% elif student.grade >= 60 %}
+                                            <span class="badge good">Good</span>
+                                        {% else %}
+                                            <span class="badge average">Needs Improvement</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="actions" style="text-align: right;">
+                                        <a href="{{ url_for('edit_student', id=student.id) }}" class="btn btn-edit">Edit</a>
+                                        <a href="{{ url_for('delete_student', id=student.id) }}" class="btn btn-delete" onclick="return confirm('Are you sure you want to remove {{ student.name }}?')">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="no-data">
+                    <h3>No Records Found</h3>
+                    <p>There are no students in the database matching your criteria.</p>
+                    <br>
+                    <a href="{{ url_for('add_student') }}" class="btn btn-add">Add Your First Student</a>
+                </div>
+            {% endif %}
+
+            <div class="search-section">
+                <h3>Search Database</h3>
+                <form method="GET" action="{{ url_for('search') }}" class="search-form">
+                    <input type="text" name="q" placeholder="Search by student name or subject..." class="search-input" autocomplete="off">
+                    <button type="submit" class="btn btn-search">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Student Grade Manager. Minimalist Edition.</p>
+    </footer>
+</body>
+</html>

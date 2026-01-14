@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-title">
+                Student Grade Manager
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('add_student') }}" class="btn btn-add">+ New Student</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Student Grade Manager. Minimalist Edition.</p>
+    </footer>
+</body>
+</html>
