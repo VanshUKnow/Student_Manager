@@ -426,7 +426,7 @@ h3 {
 }
 
 .no-data a {
-    color: var(--color-black);
+    color: var(--color-white);
     text-decoration: underline;
     text-underline-offset: 3px;
 }
